@@ -144,7 +144,6 @@ resource "aws_route_table_association" "private-rt-association" {
 }
 
 resource "aws_security_group" "eks-cluster-sg" {
-  name        = var.eks-sg
   description = "Allow 443 from Jump Server only"
 
   vpc_id = aws_vpc.vpc.id
@@ -155,6 +154,7 @@ resource "aws_security_group" "eks-cluster-sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] // It should be specific IP range
   }
+
 
   egress {
     from_port   = 0
