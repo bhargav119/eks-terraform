@@ -82,10 +82,10 @@ resource "aws_route_table" "public-rt" {
 }
 
 resource "aws_route_table_association" "public-rt-association" {
-  for_each = toset(aws_subnet.public-subnet[*].id)
+  for_each = { for idx, subnet in aws_subnet.public-subnet : idx => subnet.id }
 
   route_table_id = aws_route_table.public-rt.id
-  subnet_id      = each.key
+  subnet_id      = each.value
 
   depends_on = [
     aws_vpc.vpc,
@@ -136,10 +136,10 @@ resource "aws_route_table" "private-rt" {
 }
 
 resource "aws_route_table_association" "private-rt-association" {
-  for_each = toset(aws_subnet.private-subnet[*].id)
+  for_each = { for idx, subnet in aws_subnet.private-subnet : idx => subnet.id }
 
   route_table_id = aws_route_table.private-rt.id
-  subnet_id      = each.key
+  subnet_id      = each.value
 
   depends_on = [
     aws_vpc.vpc,
