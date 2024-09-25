@@ -81,12 +81,14 @@ resource "aws_route_table" "public-rt" {
   ]
 }
 
-resource "aws_route_table_association" "name" {
-  count          = 3
-  route_table_id = aws_route_table.public-rt.id
-  subnet_id      = aws_subnet.public-subnet[count.index].id
+resource "aws_route_table_association" "public-rt-association" {
+  for_each = { for idx, subnet in aws_subnet.public-subnet : idx => subnet.id }
 
-  depends_on = [aws_vpc.vpc,
+  route_table_id = aws_route_table.public-rt.id
+  subnet_id      = each.value
+
+  depends_on = [
+    aws_vpc.vpc,
     aws_subnet.public-subnet
   ]
 }
@@ -134,11 +136,13 @@ resource "aws_route_table" "private-rt" {
 }
 
 resource "aws_route_table_association" "private-rt-association" {
-  count          = 3
-  route_table_id = aws_route_table.private-rt.id
-  subnet_id      = aws_subnet.private-subnet[count.index].id
+  for_each = { for idx, subnet in aws_subnet.private-subnet : idx => subnet.id }
 
-  depends_on = [aws_vpc.vpc,
+  route_table_id = aws_route_table.private-rt.id
+  subnet_id      = each.value
+
+  depends_on = [
+    aws_vpc.vpc,
     aws_subnet.private-subnet
   ]
 }
